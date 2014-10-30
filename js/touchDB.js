@@ -1,12 +1,12 @@
-var touchDB = function (doc_schema) {
-	this.doc_schema = doc_schema;
-	this.db = null;
+var touchDB = function (docSchema) {
+	this.docSchema = docSchema;
+	this.dbSchema = null;
 	this.require('../js/config.js');
 	this.require('../js/libs/pouchdb-3.0.6.min.js');
 	this.createPouchDB();
 };
 touchDB.prototype.getSchema = function () {
-	return this.doc_schema;	
+	return eval(this.dbSchema.get(this.docSchema, function(err, doc) { }));	
 };
 touchDB.prototype.require = function (url) {
     var ajax = new XMLHttpRequest();
@@ -17,7 +17,6 @@ touchDB.prototype.require = function (url) {
             switch( ajax.status) {
                 case 200:
                     eval.apply( window, [script] );
-                    console.log("script loaded: ", url);
                     break;
                 default:
                     console.log("ERROR: script not loaded: ", url);
@@ -26,14 +25,14 @@ touchDB.prototype.require = function (url) {
     };
     ajax.send(null);
 }
-touchDB.prototype.loadConfig = function () {
-	console.log('config loaded!');
-};
 touchDB.prototype.remoteCouchDB = function () {
-	console.log('remote conecting...');
+	var opts = { live: true };
+	for (var i = 0; i < couchDB_servers.length; i++) {
+		this.dbSchema.sync(couchDB_servers[i]+'/'+schema_database, opts);
+	};
 };
 touchDB.prototype.createPouchDB = function () {
-	this.db = new PouchDB(schema_database);
+	this.dbSchema = new PouchDB(schema_database);
 	if(couchDB_servers.length>0) {
 		this.remoteCouchDB();
 	}
