@@ -1,12 +1,18 @@
 var touchDB = function (docSchema) {
-	this.docSchema = docSchema;
+	this.docName = docSchema;
+	this.docSchema = null;
 	this.dbSchema = null;
 	this.require('../js/config.js');
 	this.require('../js/libs/pouchdb-3.0.6.min.js');
 	this.createPouchDB();
 };
 touchDB.prototype.getSchema = function () {
-	return eval(this.dbSchema.get(this.docSchema, function(err, doc) { }));	
+	_this = this;
+	this.dbSchema.get(this.docName).then(function(doc) { 
+		_this.docSchema = doc;
+	}).catch(function (err) {
+		console.log(err);
+	});
 };
 touchDB.prototype.require = function (url) {
     var ajax = new XMLHttpRequest();
@@ -36,4 +42,5 @@ touchDB.prototype.createPouchDB = function () {
 	if(couchDB_servers.length>0) {
 		this.remoteCouchDB();
 	}
+	this.getSchema();
 };
