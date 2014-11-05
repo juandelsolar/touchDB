@@ -3,11 +3,13 @@
 	<head>
 		<title>testing touchDB</title>
 		<script src="../js/touchDB.js"></script>
-		<script>
-			var people = new touchDB('people');
-		</script>
 	</head>
 	<body>
-		testing...
+		form:
+		<div id='testForm'></div>
 	</body>
+	<script>
+		var people = new touchDB('people');
+		people.makeForm('testForm');
+	</script>
 </html>
