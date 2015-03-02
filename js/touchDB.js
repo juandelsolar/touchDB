@@ -37,14 +37,14 @@ touchDB.prototype.require = function (url) {
     ajax.send(null);
 };
 touchDB.prototype.remoteCouchDB = function () {
-	var opts = { live: true };
+	var opts = { live: true };									//no funciona en sync :/
 	for (var i = 0; i < couchDB_servers.length; i++) {
 		var server = couchDB_servers[i]+'/'+schema_database;
-		this.dbSchema.sync(server, opts)
+		this.dbSchema.sync(server)
 			.on('complete', function (info) {
-				console.log("Synced!");
+				console.log(server, "Synced!");
 			}).on('error', function (err) {
-		    	console.log("Error!", err);
+		    	console.log(server, "Error!", err);
 		});
 	};
 };
