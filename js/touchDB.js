@@ -56,25 +56,44 @@ touchDB.prototype.createPouchDB = function () {
 	this.getSchema();
 };
 touchDB.prototype.makeForm = function (domId) {
-	//console.log(this.docSchema);
 	if(this.fields) {
 		var form = document.createElement('form');
 		var fields = this.fields;
 		for(var field in fields) {
+			div = document.createElement('div');
 			if(fields[field].type) {
-				form.appendChild(this.makeDom(field, fields[field]));
+				div.appendChild(this.makeDom(field, 'label', fields[field]));
+				div.appendChild(this.makeInput(field, fields[field]));
 			}
+			form.appendChild(div);
 		}
+		form.appendChild(this.makeDom('Enviar', 'button'));
 		if(domId) {
 			document.getElementById(domId).appendChild(form);
 		} else {
 			return form;
 		}
 	} else {
-		//this.makeForm(domId);
+		_this = this;
+		setTimeout(function () {
+			_this.makeForm(domId);
+		}, 10);
 	}
 };
-touchDB.prototype.makeDom = function (field, attrs) {
+touchDB.prototype.makeDom = function (field, type, attrs) {
+	var dom = null;
+	//var lang = attrs.lang;
+	
+	dom = document.createElement(type);
+	dom.name = field;
+	dom.id = field;
+	dom.innerHTML = field;
+	
+	if(dom) {
+		return dom;
+	}
+};
+touchDB.prototype.makeInput = function (field, attrs) {
 	var dom = null;
 	var type = attrs.type;
 	if(type==='text' || type==='range') {
