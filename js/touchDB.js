@@ -82,12 +82,19 @@ touchDB.prototype.makeForm = function (domId) {
 };
 touchDB.prototype.makeDom = function (field, type, attrs) {
 	var dom = null;
-	//var lang = attrs.lang;
-	
 	dom = document.createElement(type);
+	if(attrs) {
+		if(attrs.hasOwnProperty('lang')) {
+			var lang = attrs.lang;
+			dom.innerHTML = lang[language][type];
+		} else {
+			dom.innerHTML = field;
+		}
+	} else {
+		dom.innerHTML = field;
+	}
 	dom.name = field;
 	dom.id = field;
-	dom.innerHTML = field;
 	
 	if(dom) {
 		return dom;
