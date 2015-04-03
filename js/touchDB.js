@@ -18,6 +18,7 @@ touchDB.prototype.getSchema = function () {
 touchDB.prototype.setSchema = function (schema, fields) {
 	this.docSchema = schema;
 	this.fields = fields;
+	console.log(fields);
 };
 touchDB.prototype.require = function (url) {
     var ajax = new XMLHttpRequest();
@@ -102,7 +103,7 @@ touchDB.prototype.makeDom = function (field, type, attrs) {
 touchDB.prototype.makeInput = function (field, attrs) {
 	var dom = null;
 	var type = attrs.type;
-	if(type==='text' || type==='range') {
+	if(type==='text' || type==='range' || type==='date') {
 		dom = document.createElement('input');
 		dom.name = field;
 		dom.id = field;
