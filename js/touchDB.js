@@ -62,6 +62,7 @@ touchDB.prototype.createPouchDB = function () {
 touchDB.prototype.makeForm = function (domId) {
 	if(this.fields) {
 		var form = document.createElement('form');
+		form.name = 'form';
 		var fields = this.fields;
 		for(var i=0; i<this.fieldsOrder.length; i++) {
 			div = document.createElement('div');
