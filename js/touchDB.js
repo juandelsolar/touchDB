@@ -59,7 +59,7 @@ touchDB.prototype.createPouchDB = function () {
 	}
 	this.getSchema();
 };
-touchDB.prototype.makeForm = function (domId) {
+touchDB.prototype.makeForm = function (domId, callback) {
 	if(this.fields) {
 		var form = document.createElement('form');
 		form.name = 'form';
@@ -78,10 +78,13 @@ touchDB.prototype.makeForm = function (domId) {
 		} else {
 			return form;
 		}
+		if(callback) {
+			callback();
+		}
 	} else {
 		_this = this;
 		setTimeout(function () {
-			_this.makeForm(domId);
+			_this.makeForm(domId, callback);
 		}, 10);
 	}
 };
