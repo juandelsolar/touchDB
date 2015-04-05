@@ -115,6 +115,12 @@ touchDB.prototype.makeInput = function (field, attrs) {
 		dom.name = field;
 		dom.id = field;
 		dom.type = type;
+		if(attrs.hasOwnProperty('lang')) {
+			var lang = attrs.lang;
+			if(lang[language]["placeholder"]) {
+				dom.placeholder = lang[language]["placeholder"];
+			}
+		}
 	}
 	if(dom) {
 		return dom;
