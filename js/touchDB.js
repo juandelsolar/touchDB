@@ -65,7 +65,6 @@ touchDB.prototype.makeForm = function (domId) {
 		var fields = this.fields;
 		for(var i=0; i<this.fieldsOrder.length; i++) {
 			div = document.createElement('div');
-			console.log(fields[this.fieldsOrder[i]], this.fieldsOrder[i]);
 			if(fields[this.fieldsOrder[i]].type) {
 				div.appendChild(this.makeDom(this.fieldsOrder[i], 'label', fields[this.fieldsOrder[i]]));
 				div.appendChild(this.makeInput(this.fieldsOrder[i], fields[this.fieldsOrder[i]]));
