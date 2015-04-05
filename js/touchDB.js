@@ -3,6 +3,7 @@ var touchDB = function (docSchema) {
 	this.docSchema = null;
 	this.dbSchema = null;
 	this.fields = null;
+	this.fieldsOrder = [];
 	this.require('../js/config.js');
 	this.require('../js/libs/pouchdb-3.2.1.min.js');
 	this.createPouchDB();
@@ -18,7 +19,9 @@ touchDB.prototype.getSchema = function () {
 touchDB.prototype.setSchema = function (schema, fields) {
 	this.docSchema = schema;
 	this.fields = fields;
-	console.log(fields);
+	for(var field in fields) {
+		this.fieldsOrder[fields[field].order]=field;
+	}
 };
 touchDB.prototype.require = function (url) {
     var ajax = new XMLHttpRequest();
@@ -60,11 +63,12 @@ touchDB.prototype.makeForm = function (domId) {
 	if(this.fields) {
 		var form = document.createElement('form');
 		var fields = this.fields;
-		for(var field in fields) {
+		for(var i=0; i<this.fieldsOrder.length; i++) {
 			div = document.createElement('div');
-			if(fields[field].type) {
-				div.appendChild(this.makeDom(field, 'label', fields[field]));
-				div.appendChild(this.makeInput(field, fields[field]));
+			console.log(fields[this.fieldsOrder[i]], this.fieldsOrder[i]);
+			if(fields[this.fieldsOrder[i]].type) {
+				div.appendChild(this.makeDom(this.fieldsOrder[i], 'label', fields[this.fieldsOrder[i]]));
+				div.appendChild(this.makeInput(this.fieldsOrder[i], fields[this.fieldsOrder[i]]));
 			}
 			form.appendChild(div);
 		}
