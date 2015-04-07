@@ -2,6 +2,7 @@ var touchDB = function (docSchema) {
 	this.docName = docSchema;
 	this.docSchema = null;
 	this.dbSchema = null;
+	this.dbDocs = null;
 	this.fields = null;
 	this.fieldsOrder = [];
 	this.require('../js/config.js');
@@ -43,17 +44,25 @@ touchDB.prototype.require = function (url) {
 touchDB.prototype.remoteCouchDB = function () {
 	var opts = { live: true };									//no funciona en sync :/
 	for (var i = 0; i < couchDB_servers.length; i++) {
-		var server = couchDB_servers[i]+'/'+schema_database;
-		this.dbSchema.sync(server)
+		var serverSchema = couchDB_servers[i]+'/'+schema_database;
+		this.dbSchema.sync(serverSchema, opts)
 			.on('complete', function (info) {
-				console.log(server, "Synced!");
+				console.log(serverSchema, "Synced!");
 			}).on('error', function (err) {
-		    	console.log(server, "Error!", err);
+		    	console.log(serverSchema, "Error!", err);
+		});
+		var serverDocument = couchDB_servers[i]+'/'+document_database;
+		this.dbDocs.sync(serverDocument, opts)
+			.on('complete', function (info) {
+				console.log(serverDocument, "Synced!");
+			}).on('error', function (err) {
+		    	console.log(serverDocument, "Error!", err);
 		});
 	};
 };
 touchDB.prototype.createPouchDB = function () {
 	this.dbSchema = new PouchDB(schema_database);
+	this.dbDocs = new PouchDB(document_database);
 	if(couchDB_servers.length>0) {
 		this.remoteCouchDB();
 	}
@@ -77,8 +86,9 @@ touchDB.prototype.makeForm = function (domId, callback) {
 			form.appendChild(div);
 		}
 		button = form.appendChild(this.makeDom('Enviar', 'button'));
+		var _this = this;
 		button.onclick = function () {
-			console.log('button pressed!');
+			_this.saveData();
 		}
 		if(domId) {
 			document.getElementById(domId).appendChild(form);
@@ -108,8 +118,8 @@ touchDB.prototype.makeDom = function (field, type, attrs) {
 		dom.innerHTML = field;
 	}
 
-	dom.name = field;
-	dom.id = field;
+	dom.name = field+'_'+type;
+	dom.id = field+'_'+type;
 	if(dom) {
 		return dom;
 	}
@@ -117,7 +127,7 @@ touchDB.prototype.makeDom = function (field, type, attrs) {
 touchDB.prototype.makeInput = function (field, attrs) {
 	var dom = null;
 	var type = attrs.type;
-	if(type==='text' || type==='range' || type==='date') {
+	if(type==='text' || type==='number' || type==='date') {
 		dom = document.createElement('input');
 		dom.name = field;
 		dom.id = field;
@@ -132,4 +142,19 @@ touchDB.prototype.makeInput = function (field, attrs) {
 	if(dom) {
 		return dom;
 	}
+};
+touchDB.prototype.saveData = function () {
+	var values={};
+	values['_id'] = new Date().toISOString();
+	values['schema'] = this.docName;
+	for(var i=0; i<this.fieldsOrder.length; i++) {
+		value = document.getElementById(this.fieldsOrder[i]).value;
+		values[this.fieldsOrder[i]]=value;
+	}
+	var json = JSON.parse(JSON.stringify(values));
+	this.dbDocs.put(json).then(function (response) {
+	  console.log('data saved!');
+	}).catch(function (err) {
+	  console.log(err);
+	});
 };
