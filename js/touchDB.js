@@ -63,6 +63,10 @@ touchDB.prototype.makeForm = function (domId, callback) {
 	if(this.fields) {
 		var form = document.createElement('form');
 		form.name = 'form';
+		form.action = '';
+		form.onsubmit = function () {
+			return false
+		};
 		var fields = this.fields;
 		for(var i=0; i<this.fieldsOrder.length; i++) {
 			div = document.createElement('div');
@@ -72,7 +76,10 @@ touchDB.prototype.makeForm = function (domId, callback) {
 			}
 			form.appendChild(div);
 		}
-		form.appendChild(this.makeDom('Enviar', 'button'));
+		button = form.appendChild(this.makeDom('Enviar', 'button'));
+		button.onclick = function () {
+			console.log('button pressed!');
+		}
 		if(domId) {
 			document.getElementById(domId).appendChild(form);
 		} else {
@@ -100,9 +107,9 @@ touchDB.prototype.makeDom = function (field, type, attrs) {
 	} else {
 		dom.innerHTML = field;
 	}
+
 	dom.name = field;
 	dom.id = field;
-	
 	if(dom) {
 		return dom;
 	}
